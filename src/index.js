@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import sequelize from './config/database.js';
 import apiRoutes from './routes/apiRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 import path from 'path';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
@@ -31,6 +32,7 @@ app.use('/uploads', express.static(uploadsDir));
 
 // API Routes
 app.use('/api', apiRoutes);
+app.use('/api', uploadRoutes);
 
 const port = process.env.PORT || 4000;
 sequelize.sync({ force: false }).then(() => {
