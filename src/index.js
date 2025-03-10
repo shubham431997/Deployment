@@ -1,39 +1,40 @@
 import express from 'express';
-import dotenv from "dotenv";
-import sequelize from "./config/database.js";
-import apiRoutes from "./routes/apiRoutes.js";
+import dotenv from 'dotenv';
+import sequelize from './config/database.js';
+import apiRoutes from './routes/apiRoutes.js';
 import path from 'path';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
-import os from 'os';
 import fs from 'fs';
 
+dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-dotenv.config();
 
-app.use(cors({
-  origin: '*',
-}));
+app.use(cors({ origin: '*' }));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Define the uploads directory inside the project
 const uploadsDir = path.join(__dirname, 'public', 'uploads');
+
+// Ensure the uploads directory exists
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// API Route
-
+// Serve uploaded files as static assets
 app.use('/uploads', express.static(uploadsDir));
-app.use('/api', apiRoutes);
 
+// API Routes
+app.use('/api', apiRoutes);
 
 const port = process.env.PORT || 4000;
 sequelize.sync({ force: false }).then(() => {
   app.listen(port, () => {
-    console.log(`server running on port ${port}`);
+    console.log(`Server running on port ${port}`);
   });
 });
