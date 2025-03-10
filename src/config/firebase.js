@@ -1,5 +1,5 @@
 import admin from "firebase-admin";
-const serviceAccount = await import("./sarafoods-4d82c-firebase-adminsdk-fbsvc-d7b5e216a3.json", {
+const serviceAccount = await import("/etc/secrets/sarafoods-4d82c-firebase-adminsdk-fbsvc-d7b5e216a3.json", {
   assert: { type: "json" },
 });
 
