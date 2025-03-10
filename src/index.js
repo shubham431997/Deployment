@@ -27,7 +27,7 @@ app.use('/uploads', express.static(uploadsDir));
 app.use('/api', apiRoutes);
 
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 sequelize.sync({ force: false }).then(() => {
   app.listen(port, () => {
     console.log(`server running on port ${port}`);
