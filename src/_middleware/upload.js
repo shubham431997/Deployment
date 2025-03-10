@@ -1,26 +1,30 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import os from 'os';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const desktopDir = path.join(os.homedir(), 'Desktop', 'uploads');
-console.log(desktopDir);
+// Define the uploads directory inside the project
+const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
 
+// Ensure the uploads directory exists
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
+// Configure Multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    if (!fs.existsSync(desktopDir)) {
-      fs.mkdirSync(desktopDir, { recursive: true });
-    }
-
-    cb(null, desktopDir);
+    cb(null, uploadsDir);
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname); // Set a unique filename
+    cb(null, Date.now() + '-' + file.originalname);
   }
 });
 
+// Check file type (only JPEG, JPG, PNG)
 function checkFileType(file, cb) {
   const filetypes = /jpeg|jpg|png/;
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
@@ -29,14 +33,14 @@ function checkFileType(file, cb) {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb('Error: Attached images Only....!');
-  } 
+    cb(new Error('Error: Only JPEG, JPG, and PNG images are allowed!'));
+  }
 }
 
-
+// Set up Multer
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1000000 }, // Limit 1MB
+  limits: { fileSize: 2 * 1024 * 1024 }, // Limit to 2MB
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb);
   }
