@@ -6,8 +6,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Define the uploads directory inside the project
-const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
+// Define the uploads directory inside the `src` folder
+const uploadsDir = path.join(__dirname, 'uploads');
 
 // Ensure the uploads directory exists
 if (!fs.existsSync(uploadsDir)) {
@@ -37,7 +37,7 @@ function checkFileType(file, cb) {
   }
 }
 
-// Set up Multer
+// Configure Multer
 const upload = multer({
   storage: storage,
   limits: { fileSize: 2 * 1024 * 1024 }, // Limit to 2MB
