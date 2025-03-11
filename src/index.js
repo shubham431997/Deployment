@@ -2,7 +2,6 @@ import express from 'express';
 import dotenv from 'dotenv';
 import sequelize from './config/database.js';
 import apiRoutes from './routes/apiRoutes.js';
-import uploadRoutes from './routes/uploadRoutes.js';
 import path from 'path';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
@@ -19,8 +18,8 @@ app.use(cors({ origin: '*' }));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Define the uploads directory inside the project
-const uploadsDir = path.join(__dirname, 'public', 'uploads');
+// Define the uploads directory inside `src`
+const uploadsDir = path.join(__dirname, 'src', 'uploads');
 
 // Ensure the uploads directory exists
 if (!fs.existsSync(uploadsDir)) {
@@ -32,7 +31,6 @@ app.use('/uploads', express.static(uploadsDir));
 
 // API Routes
 app.use('/api', apiRoutes);
-app.use('/api', uploadRoutes);
 
 const port = process.env.PORT || 4000;
 sequelize.sync({ force: false }).then(() => {
@@ -40,3 +38,4 @@ sequelize.sync({ force: false }).then(() => {
     console.log(`Server running on port ${port}`);
   });
 });
+
