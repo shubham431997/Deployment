@@ -38,9 +38,9 @@ class NotificationService {
         console.log(`Order not found: ${orderId}`);
         return;
       }
-      console.log("order eatils:" ,order);
+    //  console.log("order eatils:" ,order);
       const userId = order.userId;
-      const userName = order.User.name;
+     // const userName = order.User.name;
       const devices = await DeviceTokenRepository.getTokensByUserId(userId);
 
       if (devices.length === 0) {
@@ -53,7 +53,7 @@ class NotificationService {
       const payload = {
         tokens,
         notification: {
-          title: `🚀 Order Update, ${userName}!`,
+          title: `🚀 Order Update, Sir..!`,
           body: `Your order #${orderId} is now **${status}**. Check the app for details! 📦`,
         },
       };
