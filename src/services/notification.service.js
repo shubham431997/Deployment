@@ -40,7 +40,7 @@ class NotificationService {
       }
 
       const userId = order.userId;
-      const userName = order.user;
+      const userName = order.User.name;
       const devices = await DeviceTokenRepository.getTokensByUserId(userId);
 
       if (devices.length === 0) {
