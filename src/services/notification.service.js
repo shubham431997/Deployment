@@ -43,7 +43,7 @@ class NotificationService  {
       }
 
       const userId = order.userId;
-      const userName = order.user.name;
+     // const userName = order.user.name;
       const devices = await DeviceTokenRepository.getTokensByUserId(userId);
 
       if (devices.length === 0) {
@@ -56,7 +56,7 @@ class NotificationService  {
       const payload = {
         tokens,
         notification: {
-          title: `Hi ${userName}`,
+          title: "Hi",
           body: `Your order number ${orderId} is now ${status}`,
         },
       };
