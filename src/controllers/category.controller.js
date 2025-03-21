@@ -4,7 +4,7 @@ import { statusCode } from "../utils/statusCode.js";
 class CategoryController {
 
   async createCategory(req, res) {
-    const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+    const imagePath = req.file ? req.file.path : null;
     const { name } = req.body;
     const data = { name, image: imagePath }
     console.log(data);
