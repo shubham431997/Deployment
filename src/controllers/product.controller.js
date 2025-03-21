@@ -23,7 +23,7 @@ class ProductController {
 
   async createProduct(req, res) {
     try {
-      const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+      const imagePath = req.file ? req.file.path : null;
       const { name, inStock, weightNprice, wishlist, categoryId }= req.body
       const productData = { name,image: imagePath, inStock, weightNprice, wishlist, categoryId  };
       //console.log(productData);
