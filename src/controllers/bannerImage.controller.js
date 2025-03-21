@@ -14,7 +14,7 @@ class BannerImageController {
 
   async createBannerImage(req, res) {
     try {
-      const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+      const imagePath = req.file ? req.file.path : null;
       const bannerData = { image: imagePath };
       const data = await bannerImageService.createBannerImage(bannerData);
       return res.status(data.status).json({bannerData: data });
