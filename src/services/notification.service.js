@@ -1,9 +1,10 @@
 import admin from "../config/firebase.js";
 import DeviceTokenRepository from "../repositories/deviceToken.repository.js";
 import { statusCode } from "../utils/statusCode.js";
-import OrderRepository from "../repositories/order.repository.js";
+import OrderRepository from  '../repositories/order.repository.js'
+import userRepository from "../repositories/user.repository.js";
 
-class NotificationService {
+class NotificationService  {
   async sendNotification(userId, title, message, imageUrl = null) {
     try {
       const devices = await DeviceTokenRepository.getTokensByUserId(userId);
@@ -20,13 +21,16 @@ class NotificationService {
         notification: {
           title,
           body: message,
-          image: imageUrl,
+          image: imageUrl,  
         },
       };
 
       const response = await admin.messaging().sendEachForMulticast(payload);
+
+     // console.log("Notification sent successfully:", response);
       return { status: statusCode.OK, message: "Notification sent successfully." };
     } catch (error) {
+     // console.error("Error sending notification:", error);
       return { status: statusCode.BAD_GATEWAY, message: error.message };
     }
   }
@@ -34,14 +38,16 @@ class NotificationService {
   async sendOrderStatusNotification(orderId, status) {
     try {
       const order = await OrderRepository.getOrderById(orderId);
+     // console.log("order: ", order);
       if (!order) {
         console.log(`Order not found: ${orderId}`);
         return;
       }
-    //  console.log("order eatils:" ,order);
+
       const userId = order.userId;
-     // const userName = order.User.name;
       const devices = await DeviceTokenRepository.getTokensByUserId(userId);
+      const userName = await userRepository.getById(userId);
+      console.log("UserName :",userName.name);
 
       if (devices.length === 0) {
         console.log(`No registered devices for user: ${userId}`);
@@ -53,19 +59,21 @@ class NotificationService {
       const payload = {
         tokens,
         notification: {
-          title: `🚀 Order Update, Sir..!`,
+          title: `🚀 Order Update, ${userName.name}`,
           body: `Your order #${orderId} is now **${status}**. Check the app for details! 📦`,
         },
       };
 
       const response = await admin.messaging().sendEachForMulticast(payload);
+     // console.log("Notification sent successfully:", response);
     } catch (error) {
-      console.error("Error sending order status notification:", error);
+    //  console.error("Error sending order status notification:", error);
     }
   }
 
-  async sendCartNotification(userId) {
+  async sendCartNotification(userId, title, message) {
     try {
+
       const devices = await DeviceTokenRepository.getTokensByUserId(userId);
 
       if (devices.length === 0) {
@@ -76,14 +84,18 @@ class NotificationService {
       const tokens = devices.map((device) => device.token);
 
       const payload = {
-        tokens,
         notification: {
-          title: "🛍️ Your Cart is Waiting!",
-          body: "Your favorite items are still in the cart! Grab them before they’re gone! ⏳",
+          title,
+          body: message,
         },
       };
 
-      const response = await admin.messaging().sendEachForMulticast(payload);
+      const response = await admin.messaging().sendEachForMulticast({
+        tokens,
+        ...payload,
+      });
+
+      console.log(" Notification sent successfully:", response);
       return { status: statusCode.OK, message: "Notification sent successfully." };
     } catch (error) {
       console.error("Error sending notification:", error);
@@ -91,33 +103,7 @@ class NotificationService {
     }
   }
 
-  async sendPromoNotification(userId) {
-    try {
-      const devices = await DeviceTokenRepository.getTokensByUserId(userId);
-
-      if (devices.length === 0) {
-        console.log(`No registered devices for user: ${userId}`);
-        return { status: statusCode.NOT_FOUND, message: "No registered devices found." };
-      }
-
-      const tokens = devices.map((device) => device.token);
-
-      const payload = {
-        tokens,
-        notification: {
-          title: "🔥 Limited-Time Offer!",
-          body: "Get up to 50% OFF for the next 24 hours. Hurry up! 🕒",
-        },
-      };
-
-      const response = await admin.messaging().sendEachForMulticast(payload);
-      return { status: statusCode.OK, message: "Promotion notification sent successfully." };
-    } catch (error) {
-      console.error("Error sending promotion notification:", error);
-      return { status: statusCode.BAD_GATEWAY, message: error.message };
-    }
-  }
-}
+};
 
 export default new NotificationService();
 
