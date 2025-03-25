@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { ROLE } from "../utils/role.js";
 import userService from "../services/user.service.js";
 import { statusCode } from "../utils/statusCode.js";
+import { sendMail, getEmailTemplate } from "../utils/mail.js";
 
 
 class UserController {
@@ -34,6 +35,18 @@ class UserController {
         try {
             const result = await userService.login(req.body);
             res.cookie("access_token", result.data, { httpOnly: true });
+            
+            const emailTemplate = getEmailTemplate("login_alert.html", { 
+                name: result.data.name, 
+                email: result.data.email, 
+                loginTime: new Date().toLocaleString()
+            });
+
+            await sendMail({
+                to: result.data.email,
+                subject: "Login Alert - SaraFoods",
+                html: emailTemplate,
+            });
             return res.status(result.status).json({ message: result.message, user: result.data });
         } catch (error) {
             return res.status(error.status || statusCode.INTERNAL_SERVER_ERROR).json({ error: error.message });
