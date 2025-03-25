@@ -17,7 +17,7 @@ class CartController {
             "You have items in your cart. Complete your order now!"
           );
         }
-      }, 5 * 60 * 60 * 1000);
+      }, 5 * 1000);
       return res.status(result.status).json({ message: result.message, data: result.data });
     } catch (error) {
       return res.status(error.status || 500).json({ error: error.message });
