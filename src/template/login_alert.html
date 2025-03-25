@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Alert</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 480px;
+            background-color: #ffffff;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-top: 4px solid #ff6600; 
+            border-bottom: 4px solid #ff6600; 
+        }
+        .logo {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        .login-time {
+            font-weight: bold;
+            color: #ff6600;
+            font-size: 18px;
+        }
+        .alert-box {
+            background-color: #ffebee;
+            padding: 12px;
+            border-radius: 6px;
+            color: #d32f2f;
+            font-weight: bold;
+            margin: 15px 0;
+            border-left: 4px solid #d32f2f;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #ff6600;
+            color: white;
+            padding: 14px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+        .cta-button:hover {
+            background-color: #e65c00;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img class="logo" src="https://res.cloudinary.com/da5ze2ir3/image/upload/v1742725909/ic_launcher_round_lv0gek.png" alt="SaraFoods Logo0" width="72px" height="72px">
+        <h2>🔔 Security Login Alert</h2>
+        <p>Hello <strong>{{name}}</strong>,</p>
+        <p>We detected a login to your account on:</p>
+        <p class="login-time">{{loginTime}}</p>
+
+        <div class="alert-box">
+            If this login was **not** performed by you, reset your password immediately!
+        </div>
+
+        <a class="cta-button" href="https://yourdomain.com/reset-password">Secure Your Account</a>
+
+        <p class="footer">If this login was **expected**, no action is needed.</p>
+        <p class="footer">Best Regards, <br><strong>SaraFoods Security Team</strong></p>
+    </div>
+</body>
+</html>
