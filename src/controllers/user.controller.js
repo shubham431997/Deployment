@@ -39,7 +39,16 @@ class UserController {
             const emailTemplate = getEmailTemplate("login_alert.html", { 
                 name: result.data.name, 
                 email: result.data.email, 
-                loginTime: new Date().toLocaleString()
+                loginTime: new Date().toLocaleString('en-US', { 
+                   timeZone: 'Asia/Kolkata',  // Change according to your preferred timezone
+                   weekday: 'long', 
+                   year: 'numeric', 
+                   month: 'long', 
+                   day: 'numeric', 
+                   hour: '2-digit', 
+                   minute: '2-digit', 
+                   second: '2-digit' 
+                })
             });
 
             await sendMail({
