@@ -49,7 +49,7 @@ class NotificationService {
 
       const userId = order.userId;
       const devices = await DeviceTokenRepository.getTokensByUserId(userId);
-      const userName = await userRepository.getById(userId);
+      const user = await userRepository.getById(userId);
 
       if (devices.length === 0) {
         console.log(`No registered devices for user: ${userId}`);
@@ -61,7 +61,7 @@ class NotificationService {
       const payload = {
         tokens,
         notification: {
-          title: `🚀 Order Update, ${userName.name}`,
+          title: `🚀 Order Update, ${user.name}`,
           body: `Your order #${orderId} is now **${status}**. Check the app for details! 📦`,
         },
       };
@@ -107,14 +107,21 @@ class NotificationService {
    */
   scheduleCartReminderJob() {
     cron.schedule("*/5 * * * * *", async () => {
-      console.log("Checking for abandoned carts...");
+      console.log("🔍 Checking for abandoned carts...");
 
-      const fiveHoursAgo = new Date();
-      fiveHoursAgo.setSeconds(fiveSecondsAgo.getSeconds() - 5);
+      const fiveSecondsAgo = new Date();
+      fiveSecondsAgo.setSeconds(fiveSecondsAgo.getSeconds() - 5);
 
       try {
-        const abandonedCarts = await CartRepository.getAbandonedCarts(fiveHoursAgo);
-        console.log("🛒 Found abandoned carts:", abandonedCarts)
+        const abandonedCarts = await CartRepository.getAbandonedCarts(fiveSecondsAgo);
+        
+        if (abandonedCarts.length === 0) {
+          console.log("✅ No abandoned carts found.");
+          return;
+        }
+
+        console.log("🛒 Found abandoned carts:", abandonedCarts.length);
+
         for (const cart of abandonedCarts) {
           await this.sendCartNotification(
             cart.userId,
@@ -123,9 +130,9 @@ class NotificationService {
           );
         }
 
-        console.log(`Sent ${abandonedCarts.length} cart reminders.`);
+        console.log(`✅ Sent ${abandonedCarts.length} cart reminders.`);
       } catch (error) {
-        console.error("Error checking abandoned carts:", error);
+        console.error("❌ Error checking abandoned carts:", error);
       }
     });
 
@@ -138,4 +145,5 @@ const notificationService = new NotificationService();
 notificationService.scheduleCartReminderJob();
 
 export default notificationService;
+
 
