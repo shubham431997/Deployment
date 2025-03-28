@@ -1,6 +1,7 @@
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
 import sequelize from "../config/database.js";
+import { Op } from "sequelize";
 
 class CartRepository {
   async addItemToCart(userId, productId, quantity, weightNprice) {
@@ -69,6 +70,18 @@ class CartRepository {
 
   async clearCart(userId) {
     return await Cart.destroy({ where: { userId } });
+  }
+
+  async getAbandonedCarts(cutoffTime) {
+    return await Cart.findAll({
+      where: {
+        updatedAt: {
+          [Op.lte]: cutoffTime,
+        },
+      },
+      attributes: ["userId"],
+      group: ["userId"],
+    });
   }
 }
 
