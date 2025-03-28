@@ -114,7 +114,7 @@ class NotificationService {
 
       try {
         const abandonedCarts = await CartRepository.getAbandonedCarts(fiveHoursAgo);
-
+        console.log("🛒 Found abandoned carts:", abandonedCarts)
         for (const cart of abandonedCarts) {
           await this.sendCartNotification(
             cart.userId,
