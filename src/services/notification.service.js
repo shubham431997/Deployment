@@ -110,7 +110,7 @@ class NotificationService {
       console.log("Checking for abandoned carts...");
 
       const fiveHoursAgo = new Date();
-      fiveHoursAgo.setHours(fiveHoursAgo.getHours() - 5);
+      fiveHoursAgo.setSeconds(fiveSecondsAgo.getSeconds() - 5);
 
       try {
         const abandonedCarts = await CartRepository.getAbandonedCarts(fiveHoursAgo);
