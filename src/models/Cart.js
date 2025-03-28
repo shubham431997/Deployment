@@ -41,6 +41,7 @@ Cart.init(
   },
   {
     sequelize,
+    timestamps: true,
   }
 );
 
