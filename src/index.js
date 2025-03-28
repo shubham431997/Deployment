@@ -6,6 +6,7 @@ import path from 'path';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import notificationService from "./services/notification.service.js";
 
 dotenv.config();
 
