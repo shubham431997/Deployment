@@ -106,7 +106,7 @@ class NotificationService {
    * Schedule a cron job to check for abandoned carts.
    */
   scheduleCartReminderJob() {
-    cron.schedule("*/5 * * * *", async () => {
+    cron.schedule("0 */5 * * *", async () => {
       console.log("🔍 Checking for abandoned carts...");
 
      const fiveHoursAgo = new Date();
