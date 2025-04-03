@@ -1,18 +1,57 @@
 import orderRepository from "../repositories/order.repository.js";
 import cartRepository from "../repositories/cart.repository.js";
 import { statusCode } from "../utils/statusCode.js";
+import DeviceTokenRepository from "../repositories/deviceToken.repository.js";
+import { sendPushNotification } from "../config/firebase.js";
+import notificationService from "./notification.service.js";
+import userRepository from "../repositories/user.repository.js";
 
 class OrderService {
   async createOrder(orderData) {
     try {
       const newOrder = await orderRepository.createOrder(orderData);
       await cartRepository.clearCart(orderData.userId);
+      const adminList = await DeviceTokenRepository.getAllAdminTokens();
+      console.log("---------adminTokens------------", adminList);
+      if (adminList.length > 0) {
+        const message = {
+          title: "New Order Received",
+          body: `A new order #${newOrder.id} has been placed.`,
+          data: { orderId: newOrder.id },
+        };
+        for (const admin of adminList) {
+          if (admin.tokens.length > 0) {
+            await sendPushNotification(admin.tokens, message);
+            console.log("===message====", message);
+            if (!message.title || !message.body) {
+              console.error("Notification data is missing:", message);
+              return;
+            }
+            await notificationService.createNotification(
+              admin.id,
+              message.title,
+              message.body,
+              message.data || {}
+            );
+          }
+        }
+        // console.log("===message====", message, adminTokens);
+        // await sendPushNotification(adminTokens, message);
+
+        // await notificationService.createNotification(
+        //   admin.id,
+        //   message.title,
+        //   message.body,
+        //   message.data || {}
+        // );
+      }
       return {
         status: statusCode.CREATED,
         message: "Order Created Successfully..",
         data: newOrder,
       };
     } catch (error) {
+      console.log("error craeting order", error);
       return { status: statusCode.BAD_GATEWAY, message: error.message };
     }
   }
@@ -85,15 +124,14 @@ class OrderService {
     }
   }
 
-  async getOrderByIdAndUserDeatils(orderId){
+  async getOrderByIdAndUserDeatils(orderId) {
     try {
       const order = await orderRepository.getOrderByIdAndUserDeatils(orderId);
-      return { status: statusCode.OK, message: 'Order Fetched!', data: order };
+      return { status: statusCode.OK, message: "Order Fetched!", data: order };
     } catch (error) {
       return { status: statusCode.BAD_GATEWAY, message: error.message };
     }
   }
-
 }
 
 export default new OrderService();
