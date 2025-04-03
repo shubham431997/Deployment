@@ -12,7 +12,7 @@ import addressController from '../controllers/address.controller.js';
 import holidayController from '../controllers/holiday.controller.js';
 import feedbackController from '../controllers/feedback.controller.js';
 import paymentController from '../controllers/payment.controller.js';
-import notificationController from '../controllers/notification.controller.js';
+import NotificationController from '../controllers/notification.controller.js';
 import dashboardController from '../controllers/dashboard.controller.js';
 
 const router = express.Router();
@@ -25,11 +25,13 @@ router.route('/users').get(verifyAdmin,userController.getAllUsers);
 router.route("/user").get(verifyAdmin,userController.getUserById);
 router.route("/user/:id").delete(verifyAdmin, userController.remove);
 router.route("/userdetails").get(verifyUser,userController.getUserById);
-router.route("/user-update/:id").put(verifyUser,userController.update);
+router.route("/admin-update/:id").put(userController.update);
+router.route("/user-update/:id").put(userController.update);
 //send OTP to mail,verify and reset-password Routes
 router.route('/forgot-password/send-otp').post(userController.sendOtp)
 router.route('/forgot-password/verify-otp').post(userController.verifyOtp);
 router.route('/forgot-password/reset-password').post( userController.resetPassword);
+router.post('/verify-password', userController.verifyPassword);
 
 //Category Routes
 //router.route('/category').post(categoryController.createCategory);
@@ -97,11 +99,14 @@ router.route('/payment/stripe').post(verifyUser, paymentController.stripePayment
 router.route('/payment/ideal').post(verifyUser, paymentController.idealPayment);
 
 //Notifications Apii
-router.post("/register-token", notificationController.registerToken);
-router.post("/send-notification", notificationController.sendNotification);
+router.route("/register-token").post( verifyUser,NotificationController.registerToken);
+router.post("/register-admintoken", verifyAdmin, NotificationController.registerAdminToken);
+router.route("/get-admintoken").get(verifyAdmin, NotificationController.getAdminTokenById);
+router.post("/send-notification", NotificationController.sendNotification);
 
 //Dashboard Apis
-router.get("/dashboard", dashboardController.getDashboardData);
-router.get("/dashboard/top-sold-products", dashboardController.getTopSoldProducts);
-
+router.get("/dashboard", verifyAdmin, dashboardController.getDashboardData);
+router.get("/dashboard/top-sold-products", verifyAdmin, dashboardController.getTopSoldProducts);
+router.route("/top-sold-products/week").get(verifyAdmin, dashboardController.getTopSoldProductsByWeek);
+router.route("/top-sold-products/month").get(verifyAdmin, dashboardController.getTopSoldProductsByMonth);
 export default router;
