@@ -100,7 +100,7 @@ router.route('/payment/ideal').post(verifyUser, paymentController.idealPayment);
 
 //Notifications Apii
 router.route("/register-token").post( verifyUser,NotificationController.registerToken);
-router.post("/register-admintoken", verifyAdmin, NotificationController.registerAdminToken);
+router.route("/register-admintoken").post(verifyAdmin, NotificationController.registerAdminToken);
 router.route("/get-admintoken").get(verifyAdmin, NotificationController.getAdminTokenById);
 router.post("/send-notification", NotificationController.sendNotification);
 
