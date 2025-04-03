@@ -25,7 +25,7 @@ class OrderController {
         address,
         payment_mode,
         payment_id,
-        status: "Created"
+        status: "Created" 
       };
       console.log("order data", orderData);
       const order = await orderService.createOrder(orderData);
@@ -33,6 +33,7 @@ class OrderController {
         .status(order.status)
         .json({ message: order.message, order: order.data });
     } catch (error) {
+      console.log('error craeting order', error);
       return res.status(error.status).json({ error: error.message });
     }
   }
