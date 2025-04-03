@@ -12,7 +12,7 @@ import addressController from '../controllers/address.controller.js';
 import holidayController from '../controllers/holiday.controller.js';
 import feedbackController from '../controllers/feedback.controller.js';
 import paymentController from '../controllers/payment.controller.js';
-import NotificationController from '../controllers/notification.controller.js';
+import notificationController from '../controllers/notification.controller.js';
 import dashboardController from '../controllers/dashboard.controller.js';
 
 const router = express.Router();
@@ -99,10 +99,10 @@ router.route('/payment/stripe').post(verifyUser, paymentController.stripePayment
 router.route('/payment/ideal').post(verifyUser, paymentController.idealPayment);
 
 //Notifications Apii
-router.route("/register-token").post( verifyUser,NotificationController.registerToken);
-router.route("/register-admintoken").post(verifyAdmin, NotificationController.registerAdminToken);
-router.route("/get-admintoken").get(verifyAdmin, NotificationController.getAdminTokenById);
-router.post("/send-notification", NotificationController.sendNotification);
+router.route("/register-token").post( verifyUser,notificationController.registerToken);
+router.route("/register-admintoken").post(verifyAdmin, notificationController.registerAdminToken);
+router.route("/get-admintoken").get(verifyAdmin, notificationController.getAdminTokenById);
+router.post("/send-notification", notificationController.sendNotification);
 
 //Dashboard Apis
 router.get("/dashboard", verifyAdmin, dashboardController.getDashboardData);
