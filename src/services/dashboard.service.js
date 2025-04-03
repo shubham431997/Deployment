@@ -1,6 +1,5 @@
 import  DashboardRepository  from '../repositories/dashboard.repository.js';
 import { statusCode }  from '../utils/statusCode.js';
-
 export class DashboardService {
     
   async getDashboardCounts() {
@@ -11,7 +10,6 @@ export class DashboardService {
       return { status: statusCode.BAD_GATEWAY, message: error.message };
     }
   }
-
   async getTopSoldProducts() {
     try {
         const topProducts = await DashboardRepository.getTopSoldProducts();
@@ -20,5 +18,31 @@ export class DashboardService {
         return { status: statusCode.BAD_GATEWAY, message: error.message};
     }
   }
+
+  async getTopSoldProductsByPeriod(period) {
+    try {
+      const data = await DashboardRepository.getTopSoldProductsByPeriod(period);
+      return { status: 200, message: `Top 7 sold products in ${period}`, data };
+    } catch (error) {
+      return { status: 502, message: error.message };
+    }
+  }
+
+  async getDashboardData() {
+    try {
+       const counts = await DashboardRepository.getCounts();
+       const salesTotals = await DashboardRepository.getSalesTotals(); 
+       const monthlySalesData = await DashboardRepository.getMonthlySalesData();
+       return {
+          status: statusCode.OK,
+          message: 'Dashboard data retrieved successfully',
+          dashData: { counts, salesTotals, monthlySalesData } 
+       };
+    } catch (error) {
+       return { status: statusCode.BAD_GATEWAY, message: error.message };
+    }
+ }
+
 }
+
 export default new DashboardService();
