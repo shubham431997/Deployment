@@ -39,7 +39,10 @@ class CategoryService {
         if (!getData) {
             return { status: statusCode.NOT_FOUND, message: "Category Not Found" };
         }
-        const updatedCategory = await CategoryRepository.update(id, data);
+        const updatedCategory = await CategoryRepository.update(id, {
+            name: data.name,
+            image: data.image || getData.image  // ✅ Keep existing image if none provided
+        });
         return { status: statusCode.OK, message: "Category Updated Succesfully.", data: updatedCategory };
     } catch (error) {
         return { status: statusCode.BAD_GATEWAY, message: error.message };
