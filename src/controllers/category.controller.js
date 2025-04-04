@@ -42,7 +42,7 @@ class CategoryController {
       const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
       const { name } = req.body;
       console.log(req.body);
-      const existingCategory = await categoryService.getCategoryById(req.params.id);
+      const existingCategory = await categoryService.getById(req.params.id);
         if (!existingCategory) {
             return res.status(statusCode.NOT_FOUND).json({ message: "Category Not Found" });
         }
