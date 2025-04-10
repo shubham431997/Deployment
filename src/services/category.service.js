@@ -33,22 +33,25 @@ class CategoryService {
     }
   }
 
-  async updateCategory(id,data){
+  async updateCategory(req, res) {
     try {
-        const getData = await CategoryRepository.getById(id);
-        if (!getData) {
-            return { status: statusCode.NOT_FOUND, message: "Category Not Found" };
-        }
-        const updatedCategory = await CategoryRepository.update(id, {
-            name: data.name,
-            image: data.image || getData.image  // ✅ Keep existing image if none provided
-        });
-        return { status: statusCode.OK, message: "Category Updated Succesfully.", data: updatedCategory };
+      const id = req.params.id;
+      const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
+      const { name } = req.body;
+      console.log(req.body);
+      const data = {
+        name
+      };
+      if (imagePath) {
+        data.image = imagePath;
+      }
+      //console.log(data);
+      const result = await categoryService.updateCategory(id, data);
+      res.status(statusCode.OK).json({ message: result.message, category: result.data });
     } catch (error) {
-        return { status: statusCode.BAD_GATEWAY, message: error.message };
+      res.status(statusCode.BAD_GATEWAY).json({ error: error.message });
     }
   }
-
   async getById(id){
     try {
         const category =  await CategoryRepository.getById(id);
