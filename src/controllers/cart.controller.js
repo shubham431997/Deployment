@@ -1,6 +1,6 @@
-import CartService from "../services/cart.service.js"
-import NotificationService from '../services/notification.service.js'
-import CartRepository from '../repositories/cart.repository.js'
+import CartService from "../services/cart.service.js";
+import NotificationService from '../services/notification.service.js';
+import CartRepository from '../repositories/cart.repository.js';
 
 class CartController {
   async addToCart(req, res) {
